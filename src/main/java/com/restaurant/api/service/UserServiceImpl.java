@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
 		}
 		System.out.println(userRepository.findByUserid(userDetails.getUserid()));
 		System.out.println(userDetails.getUserid());
-System.out.println("github");
+System.out.println("github again");
 		String encodedString = Base64.getEncoder().withoutPadding()
 				.encodeToString((userDetails.getPassword()).getBytes());
 		userDetails.setPassword(encodedString);
