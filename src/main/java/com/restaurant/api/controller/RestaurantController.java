@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restaurant.api.UserDetails;
+import com.restaurant.api.entity.UserDetails;
 import com.restaurant.api.service.UserService;
 
 @RestController // ("/Restaurant")
@@ -26,9 +26,9 @@ public class RestaurantController {
 	}
 
 	@RequestMapping(value = "/userLogin", method = RequestMethod.POST, consumes = "application/json")
-	public ResponseEntity<?> userLogin(@RequestParam String userid, @RequestParam String password) {
+	public ResponseEntity<?> userLogin(@RequestBody UserDetails userDetails) {
 
-		ResponseEntity<?> userLogin = userService.userLogin(userid, password);
+		ResponseEntity<?> userLogin = userService.userLogin(userDetails.getUserid(), userDetails.getPassword());
 
 		return userLogin;
 	}

@@ -1,4 +1,4 @@
-package com.restaurant.api;
+package com.restaurant.api.entity;
 
 import java.util.Objects;
 

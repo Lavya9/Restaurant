@@ -2,7 +2,7 @@ package com.restaurant.api.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.restaurant.api.UserDetails;
+import com.restaurant.api.entity.UserDetails;
 
 public interface UserService {
 
