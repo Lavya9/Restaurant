@@ -18,10 +18,7 @@ public class UserServiceImpl implements UserService {
 	UserRepository userRepository;
 
 	public ResponseEntity<?> createUser(UserDetails userDetails) {
-		if ((userRepository.findByUserid(userDetails.getUserid()) != null)) {
-			System.out.println(ConstantUtil.USERALREADYEXIST);
-			return new ResponseEntity<String>(ConstantUtil.USERALREADYEXIST, HttpStatus.CONFLICT);
-		}
+
 		userDetails.setFirstName(userDetails.getFirstName());
 		userDetails.setLastName(userDetails.getLastName());
 		userDetails.setContactNo(userDetails.getContactNo());
@@ -29,11 +26,11 @@ public class UserServiceImpl implements UserService {
 		userDetails.setPassword(userDetails.getPassword());
 		String firstName = (userDetails.getFirstName()).substring(0, 2);
 		String lastName = (userDetails.getLastName()).substring(0, 2);
-		String contactNo = (userDetails.getContactNo()).substring(6,10);
-		String userid = firstName + lastName + contactNo;
+		String contactNo = (userDetails.getContactNo()).substring(6, 10);
+		String userid = firstName.toUpperCase() + lastName.toUpperCase() + contactNo;
 		userDetails.setUserid(userid);
 
-		//System.out.println(userid);
+		// System.out.println(userid);
 		if ((userRepository.findByUserid(userDetails.getUserid()) != null)) {
 			System.out.println(ConstantUtil.USERALREADYEXIST);
 			return new ResponseEntity<String>(ConstantUtil.USERALREADYEXIST, HttpStatus.CONFLICT);
@@ -66,8 +63,20 @@ public class UserServiceImpl implements UserService {
 
 		}
 
+		if (!userid.equals(userDetails.getUserid())) {
+			System.out.println(ConstantUtil.INVALIDUSERID + userid);
+			return new ResponseEntity<String>(ConstantUtil.INVALIDUSERID + userid, HttpStatus.UNAUTHORIZED);
+
+		}
+
 		return ResponseEntity.ok(ConstantUtil.USERSUCCESSFULLYLOGGEDIN + userid);
 
+	}
+
+	public UserDetails userAlreadyLoggedIn(String userid) {
+
+		UserDetails userDetails = userRepository.findByUserid(userid);
+		return userDetails;
 	}
 
 }

@@ -9,5 +9,7 @@ public interface UserService {
 	ResponseEntity<?> createUser(UserDetails userDetails);
 
 	ResponseEntity<?> userLogin(String userid, String password);
+	
+	UserDetails userAlreadyLoggedIn(String userid);
 
 }
