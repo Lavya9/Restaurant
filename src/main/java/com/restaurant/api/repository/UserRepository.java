@@ -8,8 +8,8 @@ import com.restaurant.api.entity.UserDetails;
 @Repository
 public interface UserRepository extends JpaRepository<UserDetails, String> {
 
-	// ResponseEntity<?> save(UserDetails userDetails);
-
 	UserDetails findByUserid(String userid);
+
+	UserDetails findByUseridAndEmail(String userid, String email);
 
 }

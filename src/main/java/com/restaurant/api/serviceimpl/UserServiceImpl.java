@@ -1,21 +1,29 @@
-package com.restaurant.api.service;
+package com.restaurant.api.serviceimpl;
 
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.restaurant.api.entity.UserDetails;
+import com.restaurant.api.repository.ReservationRepository;
 import com.restaurant.api.repository.UserRepository;
-import com.restaurant.api.util.ConstantUtil;
+import com.restaurant.api.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	ReservationRepository reservationRepository;
+
+	@Autowired
+	Environment environment;
 
 	public ResponseEntity<?> createUser(UserDetails userDetails) {
 
@@ -32,8 +40,7 @@ public class UserServiceImpl implements UserService {
 
 		// System.out.println(userid);
 		if ((userRepository.findByUserid(userDetails.getUserid()) != null)) {
-			System.out.println(ConstantUtil.USERALREADYEXIST);
-			return new ResponseEntity<String>(ConstantUtil.USERALREADYEXIST, HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(environment.getProperty("USERALREADYEXIST"), HttpStatus.CONFLICT);
 		}
 
 		String encodedString = Base64.getEncoder().withoutPadding()
@@ -41,7 +48,7 @@ public class UserServiceImpl implements UserService {
 		userDetails.setPassword(encodedString);
 		userRepository.save(userDetails);
 
-		return ResponseEntity.ok(ConstantUtil.USERCREATEDSUCCESSFULLY + userDetails.getUserid());
+		return ResponseEntity.ok(environment.getProperty("USERCREATEDSUCCESSFULLY") + userDetails.getUserid());
 	}
 
 	@Override
@@ -50,32 +57,38 @@ public class UserServiceImpl implements UserService {
 
 		UserDetails userDetails = userRepository.findByUserid(userid);
 		if (userDetails == null) {
-			System.out.println(ConstantUtil.USERNOTEXIST + userid);
-			return new ResponseEntity<String>(ConstantUtil.USERNOTEXIST + userid, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(environment.getProperty("USERNOTEXIST") + userid, HttpStatus.NOT_FOUND);
 		}
 
 		byte[] decodedBytes = Base64.getDecoder().decode(userDetails.getPassword());
 		String decodedString = new String(decodedBytes);
 
 		if (!decodedString.equals(password)) {
-			System.out.println(ConstantUtil.INVALIDPASSWORD + userid);
-			return new ResponseEntity<String>(ConstantUtil.INVALIDPASSWORD + userid, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>(environment.getProperty("INVALIDPASSWORD") + userid,
+					HttpStatus.UNAUTHORIZED);
 
 		}
 
 		if (!userid.equals(userDetails.getUserid())) {
-			System.out.println(ConstantUtil.INVALIDUSERID + userid);
-			return new ResponseEntity<String>(ConstantUtil.INVALIDUSERID + userid, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<String>(environment.getProperty("INVALIDUSERID") + userid,
+					HttpStatus.UNAUTHORIZED);
 
 		}
 
-		return ResponseEntity.ok(ConstantUtil.USERSUCCESSFULLYLOGGEDIN + userid);
+		return ResponseEntity.ok(environment.getProperty("USERSUCCESSFULLYLOGGEDIN") + userid);
 
 	}
 
 	public UserDetails userAlreadyLoggedIn(String userid) {
 
 		UserDetails userDetails = userRepository.findByUserid(userid);
+		return userDetails;
+	}
+
+	@Override
+	public UserDetails getUserDetails(String userid, String email) {
+
+		UserDetails userDetails = userRepository.findByUseridAndEmail(userid, email);
 		return userDetails;
 	}
 
