@@ -22,6 +22,7 @@ import com.restaurant.api.entity.UserDetails;
 import com.restaurant.api.service.MenuService;
 import com.restaurant.api.service.ReservationService;
 import com.restaurant.api.service.UserService;
+import com.restaurant.api.util.ConstantUtil;
 
 @RestController
 public class RestaurantController {
@@ -57,7 +58,8 @@ public class RestaurantController {
 
 		UserDetails user = (UserDetails) session.getAttribute("userDetails");
 		if (user != null) {
-			return new ResponseEntity<String>(environment.getProperty("USERALREADYLOGGEDIN"), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(environment.getProperty(ConstantUtil.USERALREADYLOGGEDIN),
+					HttpStatus.CONFLICT);
 		}
 		// session.invalidate();
 		ResponseEntity<?> userLogin = userService.userLogin(userDetails.getUserid(), userDetails.getPassword());
@@ -74,13 +76,25 @@ public class RestaurantController {
 		return getUser;
 	}
 
+	@RequestMapping(value = "/userDetails/{emailid}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	public UserDetails getUserDetailsOne(@PathVariable String emailid) {
+
+		UserDetails getUser = userService.getUserDetailsOne(emailid);
+
+		return getUser;
+	}
+
 	@RequestMapping(value = "/reservation", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public ResponseEntity<?> reservation(@RequestBody ReservationDetails reservationDetails,
 			HttpServletRequest request) {
 
-		request.getSession();
-		session.setMaxInactiveInterval(1 * 60);
+		// request.getSession();
+		// session.setMaxInactiveInterval(1 * 60);
 		UserDetails user = (UserDetails) session.getAttribute("userDetails");
+		if (user == null) {
+			return new ResponseEntity<String>(environment.getProperty(ConstantUtil.USERNOTLOGGEDIN),
+					HttpStatus.UNAUTHORIZED);
+		}
 		String userid = user.getUserid();
 		reservationDetails.setUserid(userid);
 		ResponseEntity<?> reservation = restaurantService.takeReservation(reservationDetails);
@@ -96,7 +110,7 @@ public class RestaurantController {
 		return getReservation;
 	}
 
-	@RequestMapping(value = "/menussave", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	@RequestMapping(value = "/menus", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
 	public Menus saveMenuItems(@RequestBody Menus menus) {
 
 		Menus getMenuItems = menuService.saveMenuItems(menus);
@@ -111,10 +125,10 @@ public class RestaurantController {
 		return getMenuItems;
 	}
 
-	@RequestMapping(value = "/menus/{category}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
-	public Menus getMenuCategory(@PathVariable String category) {
+	@RequestMapping(value = "/menus/{categoryid}", method = RequestMethod.GET, consumes = "application/json", produces = "application/json")
+	public Menus getMenuCategoryId(@PathVariable String categoryid) {
 
-		Menus menuCategory = menuService.getMenuCategory(category);
+		Menus menuCategory = menuService.getMenuCategory(categoryid);
 		return menuCategory;
 	}
 

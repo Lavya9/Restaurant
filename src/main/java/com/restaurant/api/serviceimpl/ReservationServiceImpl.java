@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.restaurant.api.entity.ReservationDetails;
 import com.restaurant.api.repository.ReservationRepository;
 import com.restaurant.api.service.ReservationService;
+import com.restaurant.api.util.ConstantUtil;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
@@ -21,27 +22,23 @@ public class ReservationServiceImpl implements ReservationService {
 	@Override
 	public ResponseEntity<?> takeReservation(ReservationDetails reservationDetails) {
 
-		String str = environment.getProperty("RESERVATIONCONFIRMED");
+		String str = environment.getProperty(ConstantUtil.RESERVATIONCONFIRMED);
 
 		if (reservationRepository.findByUserid(reservationDetails.getUserid()) != null) {
-			return ResponseEntity.ok(environment.getProperty("RESERVATIONUPDATED") + reservationDetails.getUserid());
+			reservationDetails = reservationRepository.findByUserid(reservationDetails.getUserid());// if this and below
+																									// not than booking
+																									// id shown as null
+			reservationDetails.setBookingId(reservationDetails.getBookingId());
+			System.out.println(reservationDetails);
+			return ResponseEntity
+					.ok(environment.getProperty(ConstantUtil.RESERVATIONUPDATED) + reservationDetails.getBookingId());
 		}
 
-		/*
-		 * if(reservationRepository.findByUserid(reservationDetails.getUserid())==null)
-		 * { return ResponseEntity.ok(environment.getProperty("INVALIDUSERID") +
-		 * reservationDetails.getUserid()); }
-		 */
-		// reservationDetails.setUserid(reservationDetails.getUserid());
-		reservationDetails.setBookingType(reservationDetails.getBookingType());
-		reservationDetails.setName(reservationDetails.getName());
-		reservationDetails.setContactNo(reservationDetails.getContactNo());
-		reservationDetails.setPeople(reservationDetails.getPeople());
-		reservationDetails.setDateAndTime(reservationDetails.getDateAndTime());
+		reservationDetails.setBookingId(reservationDetails.getUserid() + reservationDetails.getContactNo());
 
 		reservationRepository.save(reservationDetails);
 
-		return ResponseEntity.ok(str + reservationDetails.getUserid());
+		return ResponseEntity.ok(str + reservationDetails.getBookingId());
 	}
 
 	@Override
@@ -49,11 +46,9 @@ public class ReservationServiceImpl implements ReservationService {
 		ReservationDetails reservationDetails = reservationRepository.findByUserid(userid);
 
 		if (reservationRepository.findByUserid(userid) == null) {
-			// return new
-			// ResponseEntity<ReservationDetails>(environment.getProperty("INVALIDUSERID"),HttpStatus.NOT_FOUND);
+
 			return new ResponseEntity<ReservationDetails>(HttpStatus.NOT_FOUND); // to pass message here need to do
-																					// exception handling
-			// return new ResponseEntity<>("Hello World!", HttpStatus.OK);
+
 		}
 
 		return new ResponseEntity<ReservationDetails>(reservationDetails, HttpStatus.OK);

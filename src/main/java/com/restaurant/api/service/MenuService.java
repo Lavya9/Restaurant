@@ -12,6 +12,6 @@ public interface MenuService {
 
 	ResponseEntity<List<Menus>> getMenuItems();
 
-	Menus getMenuCategory(String category);
+	Menus getMenuCategory(String categoryid);
 
 }

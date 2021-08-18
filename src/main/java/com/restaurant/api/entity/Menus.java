@@ -1,12 +1,14 @@
 package com.restaurant.api.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Menus {
 
 	@Id
+	@GeneratedValue
 	Long id;
 
 	String category;

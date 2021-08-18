@@ -12,6 +12,7 @@ import com.restaurant.api.entity.UserDetails;
 import com.restaurant.api.repository.ReservationRepository;
 import com.restaurant.api.repository.UserRepository;
 import com.restaurant.api.service.UserService;
+import com.restaurant.api.util.ConstantUtil;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,9 +39,9 @@ public class UserServiceImpl implements UserService {
 		String userid = firstName.toUpperCase() + lastName.toUpperCase() + contactNo;
 		userDetails.setUserid(userid);
 
-		// System.out.println(userid);
 		if ((userRepository.findByUserid(userDetails.getUserid()) != null)) {
-			return new ResponseEntity<String>(environment.getProperty("USERALREADYEXIST"), HttpStatus.CONFLICT);
+			return new ResponseEntity<String>(environment.getProperty(ConstantUtil.USERALREADYEXIST),
+					HttpStatus.CONFLICT);
 		}
 
 		String encodedString = Base64.getEncoder().withoutPadding()
@@ -48,23 +49,24 @@ public class UserServiceImpl implements UserService {
 		userDetails.setPassword(encodedString);
 		userRepository.save(userDetails);
 
-		return ResponseEntity.ok(environment.getProperty("USERCREATEDSUCCESSFULLY") + userDetails.getUserid());
+		return ResponseEntity
+				.ok(environment.getProperty(ConstantUtil.USERCREATEDSUCCESSFULLY) + userDetails.getUserid());
 	}
 
 	@Override
 	public ResponseEntity<?> userLogin(String userid, String password) {
-		// TODO Auto-generated method stub
 
 		UserDetails userDetails = userRepository.findByUserid(userid);
 		if (userDetails == null) {
-			return new ResponseEntity<String>(environment.getProperty("USERNOTEXIST") + userid, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<String>(environment.getProperty(ConstantUtil.USERNOTEXIST) + userid,
+					HttpStatus.NOT_FOUND);
 		}
 
 		byte[] decodedBytes = Base64.getDecoder().decode(userDetails.getPassword());
 		String decodedString = new String(decodedBytes);
 
 		if (!decodedString.equals(password)) {
-			return new ResponseEntity<String>(environment.getProperty("INVALIDPASSWORD") + userid,
+			return new ResponseEntity<String>(environment.getProperty(ConstantUtil.INVALIDPASSWORD) + userid,
 					HttpStatus.UNAUTHORIZED);
 
 		}
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
 		}
 
-		return ResponseEntity.ok(environment.getProperty("USERSUCCESSFULLYLOGGEDIN") + userid);
+		return ResponseEntity.ok(environment.getProperty(ConstantUtil.USERLOGGEDIN) + userid);
 
 	}
 
@@ -89,6 +91,12 @@ public class UserServiceImpl implements UserService {
 	public UserDetails getUserDetails(String userid, String email) {
 
 		UserDetails userDetails = userRepository.findByUseridAndEmail(userid, email);
+		return userDetails;
+	}
+
+	@Override
+	public UserDetails getUserDetailsOne(String emailid) {
+		UserDetails userDetails = userRepository.findUserByKeyword(emailid);
 		return userDetails;
 	}
 

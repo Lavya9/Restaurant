@@ -18,12 +18,14 @@ public class ReservationDetails {
 	int people;
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
 	Date dateAntTime;
+	String bookingId;
 
 	public ReservationDetails() {
 		super();
 	}
 
-	public ReservationDetails(String userid, String bookingType, String name, String contactNo, int people, Date date) {
+	public ReservationDetails(String userid, String bookingType, String name, String contactNo, int people, Date date,
+			String bookingId) {
 		super();
 		this.userid = userid;
 		this.bookingType = bookingType;
@@ -31,6 +33,7 @@ public class ReservationDetails {
 		this.contactNo = contactNo;
 		this.people = people;
 		this.dateAntTime = dateAntTime;
+		this.bookingId = bookingId;
 	}
 
 	public String getUserid() {
@@ -81,10 +84,19 @@ public class ReservationDetails {
 		this.dateAntTime = date;
 	}
 
+	public String getBookingId() {
+		return bookingId;
+	}
+
+	public void setBookingId(String bookingId) {
+		this.bookingId = bookingId;
+	}
+
 	@Override
 	public String toString() {
-		return "Reservation [userid=" + userid + ", bookingType=" + bookingType + ", name=" + name + ", contactNo="
-				+ contactNo + ", people=" + people + ", date=" + dateAntTime + "]";
+		return "ReservationDetails [userid=" + userid + ", bookingType=" + bookingType + ", name=" + name
+				+ ", contactNo=" + contactNo + ", people=" + people + ", dateAntTime=" + dateAntTime + ", bookingId="
+				+ bookingId + "]";
 	}
 
 }

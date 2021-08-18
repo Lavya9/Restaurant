@@ -19,14 +19,7 @@ public class MenuServiceImpl implements MenuService {
 
 	@Override
 	public Menus saveMenuItems(Menus menus) {
-		menus.setCategory(menus.getCategory());
-		menus.setDescription(menus.getDescription());
-		menus.setId(menus.getId());
-		menus.setImage(menus.getImage());
-		menus.setPrice(menus.getPrice());
-		menus.setTitle(menus.getTitle());
 
-		System.out.println(menus);
 		menuRepository.save(menus);
 		return menus;
 	}
@@ -40,8 +33,8 @@ public class MenuServiceImpl implements MenuService {
 	}
 
 	@Override
-	public Menus getMenuCategory(String category) {
-		Menus menusCategory = menuRepository.findByCategory(category);
+	public Menus getMenuCategory(String categoryid) {
+		Menus menusCategory = menuRepository.findMenusByKeyword(categoryid);
 		return menusCategory;
 	}
 

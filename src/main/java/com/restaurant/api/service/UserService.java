@@ -14,4 +14,6 @@ public interface UserService {
 
 	UserDetails getUserDetails(String userid, String email);
 
+	UserDetails getUserDetailsOne(String emailid);
+
 }
