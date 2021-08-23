@@ -1,21 +1,23 @@
 package com.restaurant.api.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
-//@Table(schema="UserDetails")
-public class UserDetails {
+public class UserDetails implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column( updatable = false)
+	@Column(updatable = false)
 	private String userid;
 
 	@Column
+	@NotEmpty(message = "Please provide a email")
 	private String email;
 
 	@Column

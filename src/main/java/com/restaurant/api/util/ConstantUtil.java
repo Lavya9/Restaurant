@@ -13,5 +13,6 @@ public class ConstantUtil {
 	public static final String USERNOTLOGGEDIN = "user.notloggedin";
 	public static final String RESERVATIONCONFIRMED = "reservation.confirmed";
 	public static final String RESERVATIONUPDATED = "reservation.updated";
+	public static final String FEEDBACKSUBMITTED = "user.feedback";
 
 }

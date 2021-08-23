@@ -1,11 +1,14 @@
 package com.restaurant.api.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Menus {
+public class Menus implements Serializable {
+	private static final long serialVersionUID = 7522920439750489758L;
 
 	@Id
 	@GeneratedValue
